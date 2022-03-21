@@ -5,6 +5,8 @@ cmake_minimum_required (VERSION 3.14)
 
 project ("cwheel")
 set(CMAKE_CXX_STANDARD 17)
+set(ENV{HTTPS_PROXY}  "http://localhost:1080")
+
 
 add_subdirectory("src")
 

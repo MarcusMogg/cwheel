@@ -1,3 +1,4 @@
 #include "hello.h"
 
-std::string hello() { return "hello"; }
+#include <fmt/core.h>
+std::string hello() { return fmt::format("{}", "hello"); }
