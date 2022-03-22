@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(fmtlib)
 add_library (cwheel_lib STATIC
 "hello.h" "hello.cc"    
 "delegate.h"
-)
+ "thread_pool.h" "thread_pool.cc")
 
 target_link_libraries(
   cwheel_lib
