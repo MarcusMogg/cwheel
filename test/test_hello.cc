@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "hello.h"
+#include "src/hello.h"
 
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {

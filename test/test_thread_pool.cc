@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-#include "thread_pool.h"
+#include "src/thread_pool.h"
 
 using namespace cwheel;
 

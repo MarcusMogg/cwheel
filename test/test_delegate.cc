@@ -1,8 +1,8 @@
 
 #include <gtest/gtest.h>
 
-#include "delegate.h"
-#include "fmt/core.h"
+#include "fmt/format.h"
+#include "src/delegate.h"
 
 using namespace cwheel;
 using namespace std;

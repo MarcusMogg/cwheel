@@ -1,23 +1,16 @@
-project ("cwheel_lib")
 
-
-# 引入fmtlib
-include(FetchContent)
-FetchContent_Declare(
-  fmtlib
-  URL https://github.com/fmtlib/fmt/archive/refs/tags/8.1.1.zip
-)
-FetchContent_MakeAvailable(fmtlib)
-
+find_package(fmt CONFIG REQUIRED)
 
 add_library (cwheel_lib STATIC
 "hello.h" "hello.cc"    
 "delegate.h"
  "thread_pool.h" "thread_pool.cc")
 
-target_link_libraries(
-  cwheel_lib
-  fmt
+ target_compile_features(cwheel_lib PRIVATE cxx_std_17)
+
+target_link_libraries(cwheel_lib
+  PUBLIC
+    fmt::fmt
 )
 
 target_include_directories(cwheel_lib
