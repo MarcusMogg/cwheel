@@ -14,7 +14,7 @@ add_subdirectory("src")
 
 # 将源代码添加到此项目的可执行文件。
 add_executable (cwheel "cwheel.cpp" "cwheel.h")
-target_compile_features(cwheel PRIVATE cxx_std_17)
+set_property(TARGET cwheel PROPERTY CXX_STANDARD 20)
 
 # 单测
 add_subdirectory("test")

@@ -9,7 +9,7 @@ add_executable(
   ${test_files}
 )
 
-target_compile_features(cwheel_test PRIVATE cxx_std_17)
+set_property(TARGET cwheel_test PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(cwheel_test
 PRIVATE

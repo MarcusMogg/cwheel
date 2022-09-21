@@ -6,7 +6,7 @@ add_library (cwheel_lib STATIC
 "delegate.h"
  "thread_pool.h" "thread_pool.cc")
 
- target_compile_features(cwheel_lib PRIVATE cxx_std_17)
+set_property(TARGET cwheel_lib PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(cwheel_lib
   PUBLIC
