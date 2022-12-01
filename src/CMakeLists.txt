@@ -1,11 +1,10 @@
 
 find_package(fmt CONFIG REQUIRED)
 
-add_library (cwheel_lib STATIC
-"hello.h" "hello.cc"    
-"delegate.h"
- "thread_pool.h" "thread_pool.cc")
+file(GLOB_RECURSE HEADER_FILES "*.h" "*.hpp")
+file(GLOB_RECURSE CC_FILES "*.cc" "*.cpp")
 
+add_library (cwheel_lib STATIC ${HEADER_FILES} ${CC_FILES})
 set_property(TARGET cwheel_lib PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(cwheel_lib

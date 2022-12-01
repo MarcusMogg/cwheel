@@ -6,6 +6,8 @@
 
 using namespace cwheel;
 using namespace std;
+
+namespace delegatetestdetail {
 string normal_str;
 string static_str;
 string member_str;
@@ -20,6 +22,8 @@ struct DelegateHandler {
 
   std::string some_test;
 };
+}  // namespace delegatetestdetail
+using namespace delegatetestdetail;
 
 TEST(Delegate, FuncTest) {
   DefaultDelegateHost host;
