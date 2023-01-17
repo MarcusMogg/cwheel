@@ -1,7 +1,8 @@
 
 #include <gtest/gtest.h>
 
-#include "fmt/format.h"
+#include <format>
+
 #include "src/delegate.h"
 
 using namespace cwheel;
@@ -13,12 +14,12 @@ string static_str;
 string member_str;
 string lambda_str;
 
-static void Foo(int a) { normal_str = fmt::format("Call from normal function: {}", a); }
+static void Foo(int a) { normal_str = std::format("Call from normal function: {}", a); }
 
 struct DelegateHandler {
-  static void Bar(int a) { static_str = fmt::format("Call from static member function: {}", a); }
+  static void Bar(int a) { static_str = std::format("Call from static member function: {}", a); }
 
-  void Bar2(int a) { member_str = fmt::format("Call from member function some_test={}: {}", some_test, a); }
+  void Bar2(int a) { member_str = std::format("Call from member function some_test={}: {}", some_test, a); }
 
   std::string some_test;
 };
@@ -38,7 +39,7 @@ TEST(Delegate, FuncTest) {
   host.Register<IntFunc>(Foo);
   host.Register<IntFunc>(&DelegateHandler::Bar);
   host.Register<IntFunc>([&test](int a) { test.Bar2(a); });  // don't like bind, lambda do same
-  host.Register<IntFunc>([](int a) { lambda_str = fmt::format("Call from lambda expression: {}", a); });
+  host.Register<IntFunc>([](int a) { lambda_str = std::format("Call from lambda expression: {}", a); });
 
   host.Invoke<IntFunc>(123);
 

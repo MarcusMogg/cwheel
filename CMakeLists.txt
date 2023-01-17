@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.21)
 
 project ("cwheel")
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 # set(ENV{HTTPS_PROXY}  "http://localhost:1080")
 
 # for clangd
