@@ -6,9 +6,6 @@
 
 namespace cwheel {
 
-template <typename Signature>
-class FunctionPtr;
-
 template <typename ReturnType, typename... Args>
 class FunctionBridge {
  public:
@@ -30,6 +27,9 @@ class SpecificFunctionBridge : public FunctionBridge<ReturnType, Args...> {
   virtual ReturnType Invoke(Args... args) { return f(std::forward<Args>(args)...); }
   virtual SpecificFunctionBridge* Clone() const { return new SpecificFunctionBridge(f); }
 };
+
+template <typename Signature>
+class FunctionPtr;
 
 template <typename ReturnType, typename... Args>
 class FunctionPtr<ReturnType(Args...)> {
