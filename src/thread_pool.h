@@ -5,31 +5,10 @@
 #include <functional>
 #include <optional>
 #include <queue>
+#include <semaphore>
 #include <thread>
+
 namespace cwheel {
-
-class Semaphore {
- private:
-  int cnt_;
-  std::mutex mutex_;
-  std::condition_variable cond_;
-
- public:
-  Semaphore(int n) : cnt_(n) {}
-
-  inline void Down() {
-    std::unique_lock<std::mutex> lock(mutex_);
-    cond_.wait(lock, [this]() { return cnt_ > 0; });
-    --cnt_;
-  }
-
-  inline void Up() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    ++cnt_;
-    cond_.notify_one();
-  }
-};
-
 template <typename T>
 class BlockingQueue {
  private:
@@ -71,15 +50,15 @@ class BlockingQueue {
 class ThreadPool {
  private:
   using Task = std::function<void()>;
-  static const uint64_t kBufferSize = 1024;
+  static constexpr uint64_t kBufferSize = 1024;
 
   std::atomic<bool> over_;
 
   BlockingQueue<Task> task_queue_;
   std::vector<std::thread> workers_;
 
-  Semaphore producer_;
-  Semaphore consumer_;
+  std::counting_semaphore<kBufferSize> producer_;
+  std::counting_semaphore<kBufferSize> consumer_;
 
  public:
   explicit ThreadPool(const uint64_t size) : over_(false), workers_(size), producer_(kBufferSize), consumer_(0) {
