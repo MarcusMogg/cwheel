@@ -7,41 +7,94 @@
 #include <utility>
 
 namespace cwheel {
+template <typename Fn1, typename Fn2>
 struct ComposeOp {
-  template <class _Fn1, class _Fn2, class... _Args>
-  constexpr auto operator()(_Fn1&& __f1, _Fn2&& __f2, _Args&&... __args) const {
-    return std::invoke(std::forward<_Fn1>(__f1), std::invoke(std::forward<_Fn2>(__f2), std::forward<_Args>(__args)...));
+  Fn1 f1;
+  Fn2 f2;
+
+  explicit constexpr ComposeOp(Fn1&& __f1, Fn2&& __f2) : f1(std::forward<Fn1>(__f1)), f2(std::forward<Fn2>(__f2)) {}
+
+  template <typename... _Args>
+  constexpr auto operator()(_Args&&... __args) const {
+    return std::invoke(f1, std::invoke(f2, std::forward<_Args>(__args)...));
   }
 };
-template <class _Fn1, class _Fn2>
-struct ComposeT : std::__perfect_forward<ComposeOp, _Fn1, _Fn2> {
-  using std::__perfect_forward<ComposeOp, _Fn1, _Fn2>::__perfect_forward;
-};
-template <class _Fn1, class _Fn2>
-constexpr auto Compose(_Fn1&& __f1, _Fn2&& __f2) {
-  return ComposeT<std::decay_t<_Fn1>, std::decay_t<_Fn2>>(std::forward<_Fn1>(__f1), std::forward<_Fn2>(__f2));
+
+template <typename Fn1, typename Fn2>
+constexpr auto Compose(Fn1&& __f1, Fn2&& __f2) {
+  return ComposeOp<std::decay_t<Fn1>, std::decay_t<Fn2>>(std::forward<Fn1>(__f1), std::forward<Fn2>(__f2));
 }
 
 template <typename T>
 struct RangeAdaptorClosure;
 
-template <class _Fn>
-struct RangeAdaptorClosureT : _Fn, RangeAdaptorClosure<RangeAdaptorClosureT<_Fn>> {
-  constexpr explicit RangeAdaptorClosureT(_Fn&& __f) : _Fn(std::move(__f)) {}
+template <typename Fn>
+struct RangeAdaptorClosureT : Fn, RangeAdaptorClosure<RangeAdaptorClosureT<Fn>> {
+  constexpr explicit RangeAdaptorClosureT(Fn&& __f) : Fn(std::move(__f)) {}
 };
 
 template <typename T>
 struct RangeAdaptorClosure {
   template <std::ranges::viewable_range View, typename Closure>
-    requires std::invocable<Closure, View> && std::same_as<T, std::remove_cv_t<Closure>>
+  requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr decltype(auto) operator|(View&& view, Closure&& closure) {
     return std::invoke(std::forward<Closure>(closure), std::forward<View>(view));
   }
 
   template <typename Closure, typename AnotherClosure>
+  requires std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr decltype(auto) operator|(Closure&& closure, AnotherClosure&& another_closure) {
     return Compose(std::forward<AnotherClosure>(another_closure), std::forward<Closure>(closure));
   }
 };
+
+template <typename T>
+concept CanRef = requires(T&& t) {
+  std::ranges::ref_view{std::forward<T>(t)};
+};
+template <typename T>
+concept CanOwn = requires(T&& t) {
+  std::ranges::ref_view{std::forward<T>(t)};
+};
+class AllView : public RangeAdaptorClosure<AllView> {
+ private:
+  enum class _St { _None, _View, _Ref, _Own };
+
+  template <typename T>
+  static constexpr _St Choose() noexcept {
+    if constexpr (std::ranges::view<std::decay_t<T>>) {
+      return _St::_View;
+    } else if constexpr (CanRef<T>) {
+      return _St::_Ref;
+    } else if constexpr (CanOwn<T>) {
+      return _St::_Own;
+    }
+
+    return _St::_None;
+  }
+
+  template <typename T>
+  static constexpr _St Choice = Choose<T>();
+
+  template <typename T>
+  static constexpr bool AlwaysFalse = false;
+
+ public:
+  template <std::ranges::viewable_range T>
+  requires(Choice<T> != _St::_None) constexpr auto operator()(T&& t) const {
+    constexpr auto c = Choice<T>;
+    if constexpr (c == _St::_View) {
+      return std::forward<T>(t);
+    } else if constexpr (c == _St::_Ref) {
+      return std::ranges::ref_view{std::forward<T>(t)};
+    } else if constexpr (c == _St::_Own) {
+      return std::ranges::owning_view{std::forward<T>(t)};
+    } else {
+      static_assert(AlwaysFalse<T>, "Should be unreachable");
+    }
+  }
+};
+
+inline constexpr auto all = AllView{};
 
 }  // namespace cwheel
