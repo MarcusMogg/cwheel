@@ -36,61 +36,37 @@ struct RangeAdaptorClosureT : Fn, RangeAdaptorClosure<RangeAdaptorClosureT<Fn>> 
 template <typename T>
 struct RangeAdaptorClosure {
   template <std::ranges::viewable_range View, typename Closure>
-  requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
+    requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr decltype(auto) operator|(View&& view, Closure&& closure) {
     return std::invoke(std::forward<Closure>(closure), std::forward<View>(view));
   }
 
   template <typename Closure, typename AnotherClosure>
-  requires std::same_as<T, std::remove_cvref_t<Closure>>
-  friend constexpr decltype(auto) operator|(Closure&& closure, AnotherClosure&& another_closure) {
+    requires std::same_as<T, std::remove_cvref_t<Closure>>
+  friend constexpr auto operator|(Closure&& closure, AnotherClosure&& another_closure) {
     return Compose(std::forward<AnotherClosure>(another_closure), std::forward<Closure>(closure));
   }
 };
 
 template <typename T>
-concept CanRef = requires(T&& t) {
-  std::ranges::ref_view{std::forward<T>(t)};
-};
+concept CanRef = requires(T&& t) { std::ranges::ref_view{std::forward<T>(t)}; };
 template <typename T>
-concept CanOwn = requires(T&& t) {
-  std::ranges::ref_view{std::forward<T>(t)};
-};
-class AllView : public RangeAdaptorClosure<AllView> {
- private:
-  enum class _St { _None, _View, _Ref, _Own };
+concept CanOwn = requires(T&& t) { std::ranges::owning_view{std::forward<T>(t)}; };
 
-  template <typename T>
-  static constexpr _St Choose() noexcept {
-    if constexpr (std::ranges::view<std::decay_t<T>>) {
-      return _St::_View;
-    } else if constexpr (CanRef<T>) {
-      return _St::_Ref;
-    } else if constexpr (CanOwn<T>) {
-      return _St::_Own;
-    }
+template <typename T>
+struct AlwaysFalse : public std::false_type {};
 
-    return _St::_None;
-  }
-
-  template <typename T>
-  static constexpr _St Choice = Choose<T>();
-
-  template <typename T>
-  static constexpr bool AlwaysFalse = false;
-
- public:
+struct AllView : public RangeAdaptorClosure<AllView> {
   template <std::ranges::viewable_range T>
-  requires(Choice<T> != _St::_None) constexpr auto operator()(T&& t) const {
-    constexpr auto c = Choice<T>;
-    if constexpr (c == _St::_View) {
+  constexpr auto operator()(T&& t) const {
+    if constexpr (std::ranges::view<std::decay_t<T>>) {
       return std::forward<T>(t);
-    } else if constexpr (c == _St::_Ref) {
+    } else if constexpr (CanRef<T>) {
       return std::ranges::ref_view{std::forward<T>(t)};
-    } else if constexpr (c == _St::_Own) {
+    } else if constexpr (CanOwn<T>) {
       return std::ranges::owning_view{std::forward<T>(t)};
     } else {
-      static_assert(AlwaysFalse<T>, "Should be unreachable");
+      static_assert(AlwaysFalse<T>(), "Should be unreachable");
     }
   }
 };

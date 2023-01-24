@@ -54,4 +54,15 @@ TEST(Ranges, AllTest) {
     EXPECT_EQ(cur, i);
     cur++;
   }
+
+  for (int cur = 1; const auto& i : std::vector{1, 2, 3, 4} | cwheel::all) {
+    EXPECT_EQ(cur, i);
+    cur++;
+  }
+
+  auto g = []() { return std::array{1, 2, 3, 4}; };
+  for (int cur = 1; const auto& i : g() | cwheel::all) {
+    EXPECT_EQ(cur, i);
+    cur++;
+  }
 }
