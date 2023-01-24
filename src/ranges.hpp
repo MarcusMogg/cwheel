@@ -34,14 +34,18 @@ struct RangeAdaptorClosureT : Fn, RangeAdaptorClosure<RangeAdaptorClosureT<Fn>> 
 };
 
 template <typename T>
+concept RangeAdaptorClosureAble =
+    std::derived_from<std::remove_cvref_t<T>, RangeAdaptorClosure<std::remove_cvref_t<T>>>;
+
+template <typename T>
 struct RangeAdaptorClosure {
-  template <std::ranges::viewable_range View, typename Closure>
+  template <std::ranges::viewable_range View, RangeAdaptorClosureAble Closure>
     requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr decltype(auto) operator|(View&& view, Closure&& closure) {
     return std::invoke(std::forward<Closure>(closure), std::forward<View>(view));
   }
 
-  template <typename Closure, typename AnotherClosure>
+  template <RangeAdaptorClosureAble Closure, RangeAdaptorClosureAble AnotherClosure>
     requires std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr auto operator|(Closure&& closure, AnotherClosure&& another_closure) {
     return Compose(std::forward<AnotherClosure>(another_closure), std::forward<Closure>(closure));
