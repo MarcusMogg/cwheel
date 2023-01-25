@@ -1,9 +1,9 @@
 
-#include <gtest/gtest.h>
-
 #include <format>
 
-#include "src/delegate.h"
+#include "gtest/gtest.h"
+
+import cwheel;
 
 using namespace cwheel;
 using namespace std;

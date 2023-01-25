@@ -1,9 +1,10 @@
 #include <array>
 #include <iostream>
+#include <ranges>
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "src/ranges.hpp"
+import cwheel;
 
 int F1(int a) { return a + 1; }
 int F2(int a) { return a * 2; }
@@ -62,6 +63,22 @@ TEST(Ranges, AllTest) {
 
   auto g = []() { return std::array{1, 2, 3, 4}; };
   for (int cur = 1; const auto& i : g() | cwheel::all) {
+    EXPECT_EQ(cur, i);
+    cur++;
+  }
+
+  for (int cur = 1; const auto& i : g() | std::ranges::views::all | cwheel::all) {
+    EXPECT_EQ(cur, i);
+    cur++;
+  }
+
+  // build error
+  // for (int cur = 1; const auto& i : g() | (std::ranges::views::all | cwheel::all)) {
+  //   EXPECT_EQ(cur, i);
+  //   cur++;
+  // }
+
+  for (int cur = 1; const auto& i : g() | cwheel::all | std::ranges::views::all) {
     EXPECT_EQ(cur, i);
     cur++;
   }

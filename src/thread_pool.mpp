@@ -1,12 +1,12 @@
-// A simple thread pool using semaphore and blocking queue
-#pragma once
-#include <atomic>
-#include <condition_variable>
-#include <functional>
-#include <optional>
-#include <queue>
-#include <semaphore>
-#include <thread>
+export module cwheel.thread_pool;
+
+import <atomic>;
+import <condition_variable>;
+import <functional>;
+import <optional>;
+import <queue>;
+import <semaphore>;
+import <thread>;
 
 namespace cwheel {
 template <typename T>
@@ -47,7 +47,7 @@ class BlockingQueue {
   }
 };
 
-class ThreadPool {
+export class ThreadPool {
  private:
   using Task = std::function<void()>;
   static constexpr uint64_t kBufferSize = 1024;

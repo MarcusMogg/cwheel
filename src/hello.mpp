@@ -1,0 +1,8 @@
+export module cwheel.hello;
+
+import <format>;
+import <string>;
+
+export std::string hello() { return std::format("{}", "hello"); }
+
+void f() {}

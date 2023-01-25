@@ -1,9 +1,8 @@
-
-#include <gtest/gtest.h>
-
 #include <format>
 
-#include "src/function.hpp"
+#include "gtest/gtest.h"
+
+import cwheel;
 
 using namespace cwheel;
 using namespace std;

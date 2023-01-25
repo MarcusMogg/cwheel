@@ -1,11 +1,12 @@
 // 模拟实现 C# 的多播委托
-#pragma once
+export module cwheel.delegate;
 
-#include <functional>
-#include <list>
-#include <map>
+import <functional>;
+import <list>;
+import <map>;
+import <memory>;
 
-namespace cwheel {
+export namespace cwheel {
 
 class DelegateBase {
  public:

@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
-#include "src/hello.h"
+import cwheel;
 
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {

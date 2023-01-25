@@ -1,8 +1,9 @@
-#include <gtest/gtest.h>
-
 #include <chrono>
 
-#include "src/thread_pool.h"
+#include "gtest/gtest.h"
+
+
+import cwheel;
 
 using namespace cwheel;
 

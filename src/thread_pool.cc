@@ -1,4 +1,4 @@
-#include "thread_pool.h"
+module cwheel.thread_pool;
 
 using namespace cwheel;
 
