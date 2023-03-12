@@ -4,7 +4,7 @@
 
 #include "src/thread_pool.h"
 
-using namespace cwheel;
+using cwheel::ThreadPool;
 
 TEST(ThreadPoolTest, SingleThread) {
   int a = 0;

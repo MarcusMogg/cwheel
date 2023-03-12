@@ -1,0 +1,32 @@
+name: Test Coverage Github Actions
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test-and-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Prepare Env
+        run: |
+          sudo apt-get install g++ llvm-15
+          curl -fsSL https://xmake.io/shget.text | bash
+      - name: Run Tests
+        run: |
+          xmake build -w cwheel_test -m debug 
+          cd build/linux/x86_64/debug
+          ./cwheel_test
+          
+      - name: Upstream to Standards
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          curl -S -f https://codecov.io/bash -o codecov
+          chmod +x codecov
+          ./codecov -x "llvm-cov gcov" -Z -t ${token}

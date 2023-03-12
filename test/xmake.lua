@@ -9,4 +9,6 @@ target("cwheel_test")
     add_files("*.cc")
     add_packages("gtest")
     add_deps("cwheel_lib")
+    add_cxxflags("-fprofile-instr-generate", "-fcoverage-mapping") -- https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+    add_ldflags("-fprofile-instr-generate")
 

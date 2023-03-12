@@ -29,4 +29,17 @@ bool IsDecrease(const Arg0& a0, const Args&... args) {
   }
 }
 
+template <std::totally_ordered Arg0, std::totally_ordered... Args>
+auto Max(const Arg0& a0, const Args&... args) {
+  if constexpr (sizeof...(args) == 0) {
+    return a0;
+  } else {
+    using CommonType = std::common_type_t<Arg0, Args...>;
+
+    CommonType tmp = a0;
+    ((tmp > args ? tmp : tmp = args), ...);
+    return tmp;
+  }
+}
+
 }  // namespace cwheel

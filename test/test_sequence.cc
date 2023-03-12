@@ -1,8 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include <format>
-
+#include "fmt/format.h"
 #include "src/sequence.hpp"
 
 using namespace cwheel;
@@ -44,4 +43,13 @@ TEST(Sequence, IsDecreaseTest) {
   EXPECT_EQ(IsDecrease<std::string_view>("b", "b", "a"), true);
   EXPECT_EQ(IsDecrease<std::string_view>("a", "a", "a"), true);
   EXPECT_EQ(IsDecrease<std::string_view>("b"), true);
+}
+
+TEST(Sequence, MaxTest) {
+  EXPECT_EQ(Max(0, 1, 5, 4), 5);
+  EXPECT_EQ(Max(0, 1, 0), 1);
+  EXPECT_EQ(Max(0), 0);
+  EXPECT_EQ(Max(0, 0), 0);
+  EXPECT_EQ(Max(2, 1, 0), 2);
+  EXPECT_EQ(Max(2, 2, 1, 1, 0), 2);
 }
