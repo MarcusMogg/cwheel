@@ -2,7 +2,7 @@ name: Test Coverage Github Actions
 on:
   push:
     branches:
-      - master
+      - tmp_test_coverage
   pull_request:
     branches:
       - master
@@ -19,8 +19,8 @@ jobs:
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
-          xmake f -p linux -a x64 -m debug 
-          xmake build -w cwheel_test -y
+          xmake f -p linux -a x64 -m debug -y
+          xmake build -w cwheel_test
           cd build/linux/x86_64/debug
           ./cwheel_test
           
