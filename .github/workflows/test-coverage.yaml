@@ -21,7 +21,7 @@ jobs:
         run: |
           xmake f -p linux -a x64 -m debug -y
           xmake build -w cwheel_test
-          cd build/linux/x86_64/debug
+          cd build/linux/x64/debug
           ./cwheel_test
           
       - name: Upstream to codecov
