@@ -13,9 +13,14 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 2
+      - name: Set up GCC
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
       - name: Prepare Env
         run: |
-          sudo apt-get install g++ llvm clang lcov
+          sudo apt-get install llvm clang lcov
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         env:
