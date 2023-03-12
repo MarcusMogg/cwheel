@@ -15,16 +15,19 @@ jobs:
           fetch-depth: 2
       - name: Prepare Env
         run: |
-          sudo apt-get install g++ llvm
+          sudo apt-get install g++ llvm clang lcov
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         env:
           token: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          xmake f -p linux -a x64 -m debug -y
+          xmake f -p linux -a x64 -m coverage --test=y -y
           xmake build -w cwheel_test
-          cp build/linux/x64/debug/cwheel_test ./
-          ./cwheel_test
+          xmake run cwheel_test 
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+          lcov -e coverage.info '*cwheel/*' --output-file coverage.info
+          lcov --list coverage.info
           curl -S -f https://codecov.io/bash -o codecov
           chmod +x codecov
-          ./codecov -x "llvm-cov gcov" -Z -t ${token}
+          ./codecov -f coverage.info -Z -t ${token}
