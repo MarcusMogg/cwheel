@@ -5,10 +5,9 @@ option("test")
     set_default(false)
     set_showmenu(true)
     add_cxxflags("-fprofile-arcs -ftest-coverage")
-    add_defines("DEBUG")
 option_end()    
 
-if is_config("test", true ) then
+if has_config("test") then
     set_toolchains("gcc")
 else
     set_toolchains("clang")

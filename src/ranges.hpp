@@ -12,7 +12,8 @@ struct ComposeOp {
   Fn1 f1;
   Fn2 f2;
 
-  explicit constexpr ComposeOp(Fn1&& __f1, Fn2&& __f2) : f1(std::forward<Fn1>(__f1)), f2(std::forward<Fn2>(__f2)) {}
+  explicit constexpr ComposeOp(Fn1&& __f1, Fn2&& __f2)
+      : f1(std::forward<Fn1>(__f1)), f2(std::forward<Fn2>(__f2)) {}
 
   template <typename... _Args>
   constexpr auto operator()(_Args&&... __args) const {
@@ -22,7 +23,8 @@ struct ComposeOp {
 
 template <typename Fn1, typename Fn2>
 constexpr auto Compose(Fn1&& __f1, Fn2&& __f2) {
-  return ComposeOp<std::decay_t<Fn1>, std::decay_t<Fn2>>(std::forward<Fn1>(__f1), std::forward<Fn2>(__f2));
+  return ComposeOp<std::decay_t<Fn1>, std::decay_t<Fn2>>(
+      std::forward<Fn1>(__f1), std::forward<Fn2>(__f2));
 }
 
 template <typename T>
@@ -40,22 +42,26 @@ concept RangeAdaptorClosureAble =
 template <typename T>
 struct RangeAdaptorClosure {
   template <std::ranges::viewable_range View, RangeAdaptorClosureAble Closure>
-    requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
+  requires std::invocable<Closure, View> && std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr decltype(auto) operator|(View&& view, Closure&& closure) {
     return std::invoke(std::forward<Closure>(closure), std::forward<View>(view));
   }
 
   template <RangeAdaptorClosureAble Closure, RangeAdaptorClosureAble AnotherClosure>
-    requires std::same_as<T, std::remove_cvref_t<Closure>>
+  requires std::same_as<T, std::remove_cvref_t<Closure>>
   friend constexpr auto operator|(Closure&& closure, AnotherClosure&& another_closure) {
     return Compose(std::forward<AnotherClosure>(another_closure), std::forward<Closure>(closure));
   }
 };
 
 template <typename T>
-concept CanRef = requires(T&& t) { std::ranges::ref_view{std::forward<T>(t)}; };
+concept CanRef = requires(T&& t) {
+  std::ranges::ref_view{std::forward<T>(t)};
+};
 template <typename T>
-concept CanOwn = requires(T&& t) { std::ranges::owning_view{std::forward<T>(t)}; };
+concept CanOwn = requires(T&& t) {
+  std::ranges::owning_view{std::forward<T>(t)};
+};
 
 template <typename T>
 struct AlwaysFalse : public std::false_type {};
