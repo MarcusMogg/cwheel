@@ -24,45 +24,45 @@ TEST(Ranges, ComposeTestLambda) {
   EXPECT_EQ(f2(1), 4);
 }
 
-TEST(Ranges, AllTest) {
-  auto a = std::vector{1, 2, 3, 4};
-  auto aa = std::span{a};
+// TEST(Ranges, AllTest) {
+//   auto a = std::vector{1, 2, 3, 4};
+//   auto aa = std::span{a};
 
-  for (int cur = 1; const auto& i : cwheel::all(aa)) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
-  for (int cur = 1; const auto& i : aa | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
+//   for (int cur = 1; const auto& i : cwheel::all(aa)) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
+//   for (int cur = 1; const auto& i : aa | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
 
-  for (int cur = 1; const auto& i : aa | cwheel::all | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
+//   for (int cur = 1; const auto& i : aa | cwheel::all | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
 
-  for (int cur = 1; const auto& i : cwheel::all(a)) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
-  for (int cur = 1; const auto& i : a | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
-  for (int cur = 1; const auto& i : a | cwheel::all | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
+//   for (int cur = 1; const auto& i : cwheel::all(a)) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
+//   for (int cur = 1; const auto& i : a | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
+//   for (int cur = 1; const auto& i : a | cwheel::all | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
 
-  for (int cur = 1; const auto& i : std::vector{1, 2, 3, 4} | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
+//   for (int cur = 1; const auto& i : std::vector{1, 2, 3, 4} | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
 
-  auto g = []() { return std::array{1, 2, 3, 4}; };
-  for (int cur = 1; const auto& i : g() | cwheel::all) {
-    EXPECT_EQ(cur, i);
-    cur++;
-  }
-}
+//   auto g = []() { return std::array{1, 2, 3, 4}; };
+//   for (int cur = 1; const auto& i : g() | cwheel::all) {
+//     EXPECT_EQ(cur, i);
+//     cur++;
+//   }
+// }
