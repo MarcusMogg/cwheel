@@ -9,3 +9,6 @@ target("cwheel_test")
     add_packages("gtest")
     add_deps("cwheel_lib")
     add_options("test")
+    if is_mode("release") then
+        add_toolchains("clang")
+    end

@@ -10,3 +10,6 @@ target("cwheel_lib")
     add_packages("fmt", {public = true})
     add_includedirs("$(projectdir)/", {public = true})
     add_options("test")
+    if is_mode("release") then
+        add_toolchains("clang")
+    end

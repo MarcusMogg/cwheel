@@ -20,4 +20,7 @@ target("cwheel")
     add_deps("cwheel_lib")
     add_files("*.cpp","*.cc")
     add_options("test")
+    if is_mode("release") then
+        add_toolchains("clang")
+    end
 
