@@ -10,24 +10,29 @@ jobs:
   test-and-upstream:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
         with:
           fetch-depth: 2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
       - name: Prepare Env
         run: |
-          sudo apt-get install g++ llvm
+          sudo apt-get install llvm clang lcov
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
-        run: |
-          xmake f -p linux -a x64 -m debug 
-          xmake build -w cwheel_test -y
-          cd build/linux/x86_64/debug
-          ./cwheel_test
-          
-      - name: Upstream to Standards
         env:
           token: ${{ secrets.CODECOV_TOKEN }}
         run: |
+          xmake f -p linux -a x64 -m coverage --test=y -y
+          xmake build -w cwheel_test
+          xmake run cwheel_test 
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+          lcov -e coverage.info '*cwheel/*' --output-file coverage.info
+          lcov --list coverage.info
           curl -S -f https://codecov.io/bash -o codecov
           chmod +x codecov
-          ./codecov -x "llvm-cov gcov" -Z -t ${token}
+          ./codecov -f coverage.info -Z -t ${token}
