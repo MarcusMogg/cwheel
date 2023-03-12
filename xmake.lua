@@ -9,8 +9,6 @@ option_end()
 
 if has_config("test") then
     set_toolchains("gcc")
-else
-    set_toolchains("clang")
 end
 
 includes("src")

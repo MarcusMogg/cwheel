@@ -48,6 +48,10 @@ TEST(Function, FuncTest) {
   f = [](int a) { lambda_str = fmt::format("Call from lambda expression: {}", a); };
   f(123);
   EXPECT_EQ(lambda_str, "Call from lambda expression: 123");
+
+  FunctionPtr<void(int)> f2 = f;
+  f2(345);
+  EXPECT_EQ(lambda_str, "Call from lambda expression: 345");
 }
 
 TEST(Function, NullTest) {

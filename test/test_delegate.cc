@@ -65,6 +65,7 @@ TEST(Delegate, DeleteTest) {
 
   host.Invoke<IntFunc>(a, a);
 
+  EXPECT_EQ(host.GetDelegatePool().size(), 1);
   EXPECT_EQ(a, 4);
 
   DefaultDelegateHost host2;
