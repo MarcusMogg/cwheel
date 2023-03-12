@@ -18,16 +18,13 @@ jobs:
           sudo apt-get install g++ llvm
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
         run: |
           xmake f -p linux -a x64 -m debug -y
           xmake build -w cwheel_test
           cp build/linux/x64/debug/cwheel_test ./
           ./cwheel_test
-          
-      - name: Upstream to codecov
-        env:
-          token: ${{ secrets.CODECOV_TOKEN }}
-        run: |
           curl -S -f https://codecov.io/bash -o codecov
           chmod +x codecov
           ./codecov -x "llvm-cov gcov" -Z -t ${token}
