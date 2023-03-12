@@ -15,12 +15,12 @@ jobs:
           fetch-depth: 2
       - name: Prepare Env
         run: |
-          sudo apt-get install g++ llvm-15
+          sudo apt-get install g++ llvm
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
           xmake f -p linux -a x64 -m debug 
-          xmake build -w cwheel_test 
+          xmake build -w cwheel_test -y
           cd build/linux/x86_64/debug
           ./cwheel_test
           
