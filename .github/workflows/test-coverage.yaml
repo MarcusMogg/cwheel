@@ -10,7 +10,7 @@ jobs:
   test-and-upstream:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
         with:
           fetch-depth: 2
       - name: Prepare Env
@@ -23,11 +23,13 @@ jobs:
           xmake build -w cwheel_test
           cd build/linux/x64/debug
           ./cwheel_test
+          pwd
           
       - name: Upstream to codecov
         env:
           token: ${{ secrets.CODECOV_TOKEN }}
         run: |
+          pwd
           curl -S -f https://codecov.io/bash -o codecov
           chmod +x codecov
           ./codecov -x "llvm-cov gcov" -Z -t ${token}
