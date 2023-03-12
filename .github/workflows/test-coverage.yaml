@@ -23,8 +23,6 @@ jobs:
           sudo apt-get install llvm clang lcov
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
-        env:
-          token: ${{ secrets.CODECOV_TOKEN }}
         run: |
           xmake f -p linux -a x64 -m coverage --test=y -y
           xmake build -w cwheel_test
@@ -33,6 +31,9 @@ jobs:
           lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
           lcov -e coverage.info '*cwheel/*' --output-file coverage.info
           lcov --list coverage.info
-          curl -S -f https://codecov.io/bash -o codecov
-          chmod +x codecov
-          ./codecov -f coverage.info -Z -t ${token}
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} 
+          files: ./coverage.info
+          flags: unittests
+          fail_ci_if_error: true 
