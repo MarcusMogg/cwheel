@@ -25,8 +25,8 @@ TEST(Ranges, ComposeTestLambda) {
 }
 
 TEST(Ranges, AllTest) {
-  const auto a = std::vector{1, 2, 3, 4};
-  const auto aa = std::span{a};
+  auto a = std::vector{1, 2, 3, 4};
+  auto aa = std::span{a};
 
   for (int cur = 1; const auto& i : cwheel::all(aa)) {
     EXPECT_EQ(cur, i);

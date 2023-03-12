@@ -24,7 +24,7 @@ jobs:
           cd build/linux/x86_64/debug
           ./cwheel_test
           
-      - name: Upstream to Standards
+      - name: Upstream to codecov
         env:
           token: ${{ secrets.CODECOV_TOKEN }}
         run: |
