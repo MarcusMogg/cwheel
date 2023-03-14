@@ -1,6 +1,7 @@
 // 模拟实现 C# 的多播委托
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <list>
 #include <map>
@@ -25,8 +26,9 @@ class Delegate : public DelegateBase {
 
   // call args
   template <typename... CallArgs>
+    requires std::invocable<Callable, CallArgs...>
   inline void operator()(CallArgs&&... args) const {
-    caller_(std::forward<CallArgs>(args)...);
+    std::invoke(caller_, std::forward<CallArgs>(args)...);
   }
 
  private:
@@ -43,45 +45,46 @@ class IDelegatable {
   IDelegatable() = default;
   virtual ~IDelegatable() = default;
 
-  template <typename Delegate>
+  template <typename Delegatable>
   inline DelegateList& GetDelegateList() {
-    size_t delegate_type_code = typeid(Delegate).hash_code();
+    size_t delegate_type_code = typeid(Delegatable).hash_code();
     return GetDelegatePool()[delegate_type_code];
   }
 
   //  here Args is callable func
-  template <typename Delegate, typename... Args>
+  template <typename Delegatable, typename... Args>
   inline DelegatePos Register(Args&&... args) {
-    using DelegateFuncType = ::cwheel::Delegate<typename Delegate::Signature>;
+    using DelegateFuncType = ::cwheel::Delegate<typename Delegatable::Signature>;
 
-    DelegateList& list = GetDelegateList<Delegate>();
+    DelegateList& list = GetDelegateList<Delegatable>();
 
     list.emplace_back(std::make_unique<DelegateFuncType>(std::forward<Args>(args)...));
     return std::prev(list.end());
   }
 
-  template <typename Delegate>
+  template <typename Delegatable>
   inline DelegatePos Delete(DelegatePos pos) {
-    DelegateList& list = GetDelegateList<Delegate>();
+    DelegateList& list = GetDelegateList<Delegatable>();
     return list.erase(pos);
   }
 
-  template <typename Delegate>
+  template <typename Delegatable>
   inline void Clear() {
-    size_t delegate_type_code = typeid(Delegate).hash_code();
+    size_t delegate_type_code = typeid(Delegatable).hash_code();
     GetDelegatePool().erase(delegate_type_code);
   }
 
   // Here Args are real run args
-  template <typename Delegate, typename... Args>
+  template <typename Delegatable, typename... Args>
   inline void Invoke(Args&&... args) {
-    using DelegateFuncType = ::cwheel::Delegate<typename Delegate::Signature>;
-    size_t delegate_type_code = typeid(Delegate).hash_code();
+    using DelegateFuncType = ::cwheel::Delegate<typename Delegatable::Signature>;
+    size_t delegate_type_code = typeid(Delegatable).hash_code();
     const auto& pool = GetDelegatePool();
 
-    if (pool.contains(delegate_type_code)) {
-      for (const auto& func : pool.at(delegate_type_code)) {
-        (*dynamic_cast<DelegateFuncType*>(func.get()))(std::forward<Args>(args)...);
+    const auto it = pool.find(delegate_type_code);
+    if (it != pool.end()) {
+      for (const auto& func : it->second) {
+        std::invoke(*dynamic_cast<DelegateFuncType*>(func.get()), std::forward<Args>(args)...);
       }
     }
   }
