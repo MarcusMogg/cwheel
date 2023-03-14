@@ -16,7 +16,7 @@ class BlockingQueue {
   std::queue<T> queue_;
 
  public:
-  BlockingQueue() {}
+  BlockingQueue() = default;
   ~BlockingQueue() = default;
 
   inline void Push(T&& value) {
@@ -61,7 +61,8 @@ class ThreadPool {
   std::counting_semaphore<kBufferSize> consumer_;
 
  public:
-  explicit ThreadPool(const uint64_t size) : over_(false), workers_(size), producer_(kBufferSize), consumer_(0) {
+  explicit ThreadPool(const uint64_t size)
+      : over_(false), workers_(size), producer_(kBufferSize), consumer_(0) {
     for (auto& worker : workers_) {
       worker = std::thread([this]() { this->WorkerThread(); });
     }

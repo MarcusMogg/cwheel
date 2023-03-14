@@ -4,6 +4,7 @@
 #include <functional>
 #include <list>
 #include <map>
+#include <memory>
 
 namespace cwheel {
 
@@ -20,7 +21,7 @@ class Delegate : public DelegateBase {
 
   explicit Delegate(Callable&& cb) : caller_(std::forward<Callable>(cb)) {}
 
-  ~Delegate() = default;
+  ~Delegate() override = default;
 
   // call args
   template <typename... CallArgs>
@@ -78,7 +79,7 @@ class IDelegatable {
     size_t delegate_type_code = typeid(Delegate).hash_code();
     const auto& pool = GetDelegatePool();
 
-    if (pool.count(delegate_type_code)) {
+    if (pool.contains(delegate_type_code)) {
       for (const auto& func : pool.at(delegate_type_code)) {
         (*dynamic_cast<DelegateFuncType*>(func.get()))(std::forward<Args>(args)...);
       }
@@ -86,14 +87,14 @@ class IDelegatable {
   }
 
   virtual DelegatePool& GetDelegatePool() = 0;
-  virtual const DelegatePool& GetDelegatePool() const = 0;
+  [[nodiscard]] virtual const DelegatePool& GetDelegatePool() const = 0;
 };
 
 class DefaultDelegateHost : public IDelegatable {
  public:
   DelegatePool& GetDelegatePool() override { return pool_; }
 
-  const DelegatePool& GetDelegatePool() const override { return pool_; }
+  [[nodiscard]] const DelegatePool& GetDelegatePool() const override { return pool_; }
 
  private:
   DelegatePool pool_;

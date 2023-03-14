@@ -1,7 +1,6 @@
 #include "thread_pool.h"
 
-using namespace cwheel;
-
+namespace cwheel {
 ThreadPool::~ThreadPool() {
   over_ = true;
   for (auto& worker : workers_) {
@@ -30,3 +29,4 @@ void ThreadPool::WorkerThread() {
     }
   }
 }
+}  // namespace cwheel

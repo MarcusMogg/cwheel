@@ -24,7 +24,8 @@ bool IsDecrease(const Arg0& a0, const Args&... args) {
   } else {
     using CommonType = std::common_type_t<Arg0, Args...>;
 
-    CommonType tmp0 = a0, tmp1 = a0;
+    CommonType tmp0 = a0;
+    CommonType tmp1 = a0;
     return ((tmp0 = tmp1, tmp1 = args, tmp0 >= tmp1) && ...);
   }
 }
