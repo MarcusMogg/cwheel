@@ -1,6 +1,9 @@
 add_rules("mode.debug", "mode.release")
 add_rules("mode.coverage")
 
+set_languages("cxx23")
+set_warnings("all", "error")
+
 option("test")
     set_default(false)
     set_showmenu(true)
@@ -16,11 +19,7 @@ includes("test")
 
 target("cwheel")
     set_kind("binary")
-    set_languages("cxx20")
     add_deps("cwheel_lib")
-    add_files("*.cpp","*.cc")
+    add_files("*.cc")
     add_options("test")
-    if is_mode("release") then
-        add_toolchains("clang")
-    end
 

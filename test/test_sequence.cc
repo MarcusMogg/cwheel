@@ -1,7 +1,8 @@
 
 #include <gtest/gtest.h>
 
-#include "fmt/format.h"
+#include <format>
+
 #include "src/sequence.hpp"
 
 using namespace cwheel;

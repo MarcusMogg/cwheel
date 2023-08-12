@@ -1,7 +1,8 @@
 
 #include <gtest/gtest.h>
 
-#include "fmt/format.h"
+#include <format>
+
 #include "src/function.hpp"
 
 using namespace cwheel;
@@ -13,13 +14,13 @@ string static_str;
 string member_str;
 string lambda_str;
 
-static void Foo(int a) { normal_str = fmt::format("Call from normal function: {}", a); }
+static void Foo(int a) { normal_str = std::format("Call from normal function: {}", a); }
 
 struct DelegateHandler {
-  static void Bar(int a) { static_str = fmt::format("Call from static member function: {}", a); }
+  static void Bar(int a) { static_str = std::format("Call from static member function: {}", a); }
 
   void Bar2(int a) {
-    member_str = fmt::format("Call from member function some_test={}: {}", some_test, a);
+    member_str = std::format("Call from member function some_test={}: {}", some_test, a);
   }
 
   std::string some_test;
@@ -45,7 +46,7 @@ TEST(Function, FuncTest) {
   f(123);
   EXPECT_EQ(member_str, "Call from member function some_test=instance: 123");
 
-  f = [](int a) { lambda_str = fmt::format("Call from lambda expression: {}", a); };
+  f = [](int a) { lambda_str = std::format("Call from lambda expression: {}", a); };
   f(123);
   EXPECT_EQ(lambda_str, "Call from lambda expression: 123");
 

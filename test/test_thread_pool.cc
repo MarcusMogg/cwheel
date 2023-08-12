@@ -8,7 +8,7 @@ using cwheel::ThreadPool;
 
 TEST(ThreadPoolTest, SingleThread) {
   int a = 0;
-  const auto add = [&a]() { a += 1; };
+
   do {
     ThreadPool pool(1);
     pool.AddTask([&a]() { a += 1; });

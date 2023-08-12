@@ -1,6 +1,6 @@
 # see https://clangd.llvm.org/config#compileflags
 CompileFlags:
-  Add: [-std=c++20]
+  Add: [-std=c++2b]
 
 InlayHints:
   Enabled: Yes

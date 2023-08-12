@@ -1,4 +1,5 @@
 #include "hello.h"
 
-#include "fmt/format.h"
-std::string hello() { return fmt::format("{}", "hello"); }
+#include <format>
+
+std::string hello() { return std::format("{}", "hello"); }
