@@ -32,9 +32,9 @@ jobs:
           lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
           lcov -e coverage.info '*cwheel/*' --output-file coverage.info
           lcov --list coverage.info
-      # - uses: codecov/codecov-action@v3
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }} 
-      #     files: ./coverage.info
-      #     flags: unittests
-      #     fail_ci_if_error: true 
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} 
+          files: ./coverage.info
+          flags: unittests
+          fail_ci_if_error: true 
