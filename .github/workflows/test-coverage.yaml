@@ -23,7 +23,7 @@ jobs:
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
-          xmake f -p linux -a x64 -m coverage --test=y -y --toolchain=gcc
+          xmake f -p linux -a x64 -m coverage --test=y -y --toolchain=gcc-${{matrix.gcc_version}}
           xmake build -w cwheel_test
           xmake run cwheel_test
           lcov --directory . --capture --output-file coverage.info
