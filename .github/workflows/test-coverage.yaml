@@ -20,7 +20,8 @@ jobs:
         run: |
           sudo apt install -y gcc-${{matrix.gcc_version}} g++-${{matrix.gcc_version}}
           sudo apt-get install -y lcov
-          sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcc-${{matrix.gcc_version}} 100
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{matrix.gcc_version}} 100
+          sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-${{matrix.gcc_version}} 100
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
