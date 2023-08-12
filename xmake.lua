@@ -10,9 +10,7 @@ option("test")
     add_cxxflags("-fprofile-arcs -ftest-coverage")
 option_end()    
 
-if has_config("test") then
-    set_toolchains("gcc")
-end
+add_cxxflags("-stdlib=libc++", {tools = "clang"})
 
 includes("src")
 includes("test")
