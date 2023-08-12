@@ -19,17 +19,17 @@ jobs:
       - name: Prepare Env
         run: |
           sudo apt install -y gcc-${{matrix.gcc_version}} g++-${{matrix.gcc_version}}
-          sudo apt-get install -y lcov
+          sudo apt-get install -y gcov-${{matrix.gcc_version}}
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
           xmake f -p linux -a x64 -m coverage --test=y -y --toolchain=gcc-${{matrix.gcc_version}}
           xmake build -w cwheel_test
           xmake run cwheel_test
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-          lcov -e coverage.info '*cwheel/*' --output-file coverage.info
-          lcov --list coverage.info
+          gcov-${{matrix.gcc_version}} --directory . --capture --output-file coverage.info
+          gcov-${{matrix.gcc_version}} --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+          gcov-${{matrix.gcc_version}} -e coverage.info '*cwheel/*' --output-file coverage.info
+          gcov-${{matrix.gcc_version}} --list coverage.info
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} 
