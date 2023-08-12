@@ -2,7 +2,6 @@ add_rules("mode.debug", "mode.release")
 add_rules("mode.coverage")
 
 set_languages("cxx23")
-set_warnings("all", "error")
 
 option("test")
     set_default(false)
