@@ -7,10 +7,10 @@ on:
     branches:
       - master
 jobs:
-  test-and-upstream-clang:
+  test-and-upstream-gcc:
     strategy:
       matrix:
-        clang_version: [16]
+        gcc_version: [13]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -18,12 +18,12 @@ jobs:
           fetch-depth: 2
       - name: Prepare Env
         run: |
-          sudo apt-get install -y llvm-${{matrix.clang_version}}
+          sudo apt install -y gcc-${{matrix.gcc_version}} g++-${{matrix.gcc_version}}
           sudo apt-get install -y lcov
           curl -fsSL https://xmake.io/shget.text | bash
       - name: Run Tests
         run: |
-          xmake f -p linux -a x64 -m coverage --test=y -y --toolchain=clang
+          xmake f -p linux -a x64 -m coverage --test=y -y --toolchain=gcc
           xmake build -w cwheel_test
           xmake run cwheel_test
           lcov --directory . --capture --output-file coverage.info
