@@ -19,4 +19,3 @@ target("cwheel")
     add_deps("cwheel_lib")
     add_files("*.cc")
     add_options("test")
-

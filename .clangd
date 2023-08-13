@@ -1,6 +1,8 @@
 # see https://clangd.llvm.org/config#compileflags
+# clangd not work well for msvc, because it has no flag std=c++23 but /std:c++latest
 CompileFlags:
-  Add: [-std=c++2b]
+  Add: ["/std:c++20", "-std=c++23"]
+  Compiler: clang++
 
 InlayHints:
   Enabled: Yes
